@@ -629,6 +629,43 @@ test('fromMarkdown: separate line attributes after heading', async (t) => {
 })
 
 // =============================================================================
+// fromMarkdown: Setext heading to thematic break conversion
+// =============================================================================
+
+test('fromMarkdown: setext-style attributes converted to thematicBreak in parser', async (t) => {
+  // Use parsePhase1 to see the tree after parser (before transform)
+  const tree = parsePhase1('{.class}\n---')
+
+  // Should be a thematicBreak, not a heading
+  assert.equal(tree.children[0].type, 'thematicBreak')
+
+  // Should have children with mdastAttributes
+  const hr = tree.children[0]
+  assert.ok('children' in hr)
+  assert.equal(hr.children.length, 1)
+  assert.equal(hr.children[0].type, 'mdastAttributes')
+  assert.deepEqual(hr.children[0].attributes, {class: 'class'})
+})
+
+test('fromMarkdown: regular setext heading preserved', async (t) => {
+  const tree = parsePhase1('Heading Text {.class}\n---')
+
+  // Should remain a heading (has text content, not just attributes)
+  assert.equal(tree.children[0].type, 'heading')
+  assert.equal(tree.children[0].depth, 2)
+})
+
+test('fromMarkdown: thematicBreak position is on --- line', async (t) => {
+  const tree = parsePhase1('{.class}\n---')
+
+  const hr = tree.children[0]
+  assert.equal(hr.type, 'thematicBreak')
+  // Position should be on line 2 (the --- line)
+  assert.equal(hr.position.start.line, 2)
+  assert.equal(hr.position.end.line, 2)
+})
+
+// =============================================================================
 // toMarkdown: Block elements
 // =============================================================================
 
