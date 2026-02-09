@@ -1,0 +1,35 @@
+{
+  "name": "mdast-util-attributes",
+  "version": "0.0.1",
+  "description": "mdast extension to parse and serialize attributes",
+  "license": "MIT",
+  "type": "module",
+  "types": "./index.d.ts",
+  "exports": {
+    "types": "./index.d.ts",
+    "default": "./index.js"
+  },
+  "files": [
+    "lib/",
+    "index.d.ts",
+    "index.js"
+  ],
+  "dependencies": {
+    "mdast-util-from-markdown": "^2.0.0",
+    "mdast-util-to-markdown": "^2.0.0",
+    "micromark-extension-attributes": "github:ugogon/micromark-extension-attributes",
+    "parse-entities": "^4.0.0",
+    "stringify-entities": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/mdast": "^4.0.0",
+    "@types/node": "^22.0.0",
+    "c8": "^10.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "test": "node --conditions development test.js",
+    "test-coverage": "c8 --100 --reporter lcov npm run test"
+  }
+}
