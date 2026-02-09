@@ -683,4 +683,71 @@ test('toMarkdown: code block with attributes', async (t) => {
   assert.ok(result.includes('{.highlight}'))
 })
 
+test('toMarkdown: thematic break with attributes', async (t) => {
+  /** @type {Root} */
+  const tree = {
+    type: 'root',
+    children: [{
+      type: 'thematicBreak',
+      data: {hProperties: {class: 'divider'}}
+    }]
+  }
+
+  const result = serialize(tree)
+  // Should output attributes on line before ---
+  assert.ok(result.includes('{.divider}'))
+  assert.ok(result.includes('---'))
+})
+
+test('toMarkdown: thematic break with id and class', async (t) => {
+  /** @type {Root} */
+  const tree = {
+    type: 'root',
+    children: [{
+      type: 'thematicBreak',
+      data: {hProperties: {id: 'separator', class: 'fancy'}}
+    }]
+  }
+
+  const result = serialize(tree)
+  assert.ok(result.includes('#separator'))
+  assert.ok(result.includes('.fancy'))
+  assert.ok(result.includes('---'))
+})
+
+test('toMarkdown: thematic break without attributes', async (t) => {
+  /** @type {Root} */
+  const tree = {
+    type: 'root',
+    children: [{
+      type: 'thematicBreak'
+    }]
+  }
+
+  const result = serialize(tree)
+  assert.ok(result.includes('---'))
+  // Should not have attribute braces
+  assert.ok(!result.includes('{'))
+})
+
+test('roundtrip: thematic break with attributes (serialize only)', async (t) => {
+  // Note: The setext-to-hr conversion is in remark-attributes, not mdast-util-attributes
+  // So we test that serialize produces valid output that will be converted to hr
+  // when parsed with the full remark-attributes plugin
+
+  /** @type {Root} */
+  const tree = {
+    type: 'root',
+    children: [{
+      type: 'thematicBreak',
+      data: {hProperties: {class: 'divider'}}
+    }]
+  }
+
+  const result = serialize(tree)
+  // Should produce {.divider}\n---
+  assert.ok(result.includes('{.divider}'))
+  assert.ok(result.includes('---'))
+})
+
 console.log('All mdast-util-attributes tests defined')
